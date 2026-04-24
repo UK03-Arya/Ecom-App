@@ -76,7 +76,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatch({ type: 'LOGIN_START' });
     try {
       const response = await apiLogin(username, password);
-      const token = response.data.token; // Changed to match DummyJSON API structure
+      const token = response.data.accessToken || response.data.token; // Changed to match DummyJSON API structure
+      if (!token) {
+        throw new Error('No token received from server');
+      }
       await AsyncStorage.setItem('userToken', token);
       dispatch({ type: 'LOGIN_SUCCESS', payload: token });
     } catch (error: any) {
