@@ -41,3 +41,4 @@ Using Context + `useReducer` is a great choice for this app as it avoids prop dr
 - Used standard `react-native` components instead of a UI library for simplicity and lower footprint.
 - Mocked authentication with DummyJSON means the token isn't a real JWT, but the flow mimics a real-world scenario.
 - Images are loaded from external URLs directly; in a production app, caching mechanisms (like `expo-image` or `react-native-fast-image`) would be used.
+# Ecom-App
