@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, SafeAreaView, Animated } from 'react-native';
 import { CartContext, CartItem } from '../context/CartContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 const VIBRANT_COLOR = '#6C5CE7';
 const ACCENT_COLOR = '#FF7675';
@@ -15,41 +16,58 @@ const CartScreen = () => {
     return state.items.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
   };
 
+  const renderRightActions = (id: number) => {
+    return (
+      <TouchableOpacity
+        style={styles.deleteAction}
+        onPress={() => removeItem(id)}
+      >
+        <Ionicons name="trash" size={24} color="#fff" />
+        <Text style={styles.deleteActionText}>Delete</Text>
+      </TouchableOpacity>
+    );
+  };
+
   const renderCartItem = ({ item }: { item: CartItem }) => (
-    <View style={styles.cartItem}>
-      <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
-      <View style={styles.itemDetails}>
-        <View style={styles.headerRow}>
-          <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
-          <TouchableOpacity 
-            style={styles.removeButton}
-            onPress={() => removeItem(item.id)}
-          >
-            <Ionicons name="trash-outline" size={20} color={ACCENT_COLOR} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.price}>${item.price.toFixed(2)}</Text>
-        
-        <View style={styles.actionsContainer}>
-          <View style={styles.quantityContainer}>
+    <Swipeable
+      renderRightActions={() => renderRightActions(item.id)}
+      containerStyle={styles.swipeableContainer}
+    >
+      <View style={styles.cartItem}>
+        <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
+        <View style={styles.itemDetails}>
+          <View style={styles.headerRow}>
+            <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
             <TouchableOpacity 
-              style={styles.quantityButton}
-              onPress={() => updateQuantity(item.id, item.quantity - 1)}
+              style={styles.removeButton}
+              onPress={() => removeItem(item.id)}
             >
-              <Ionicons name="remove" size={16} color={VIBRANT_COLOR} />
-            </TouchableOpacity>
-            <Text style={styles.quantityText}>{item.quantity}</Text>
-            <TouchableOpacity 
-              style={styles.quantityButton}
-              onPress={() => updateQuantity(item.id, item.quantity + 1)}
-            >
-              <Ionicons name="add" size={16} color={VIBRANT_COLOR} />
+              <Ionicons name="trash-outline" size={20} color={ACCENT_COLOR} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.subtotal}>${(item.price * item.quantity).toFixed(2)}</Text>
+          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+          
+          <View style={styles.actionsContainer}>
+            <View style={styles.quantityContainer}>
+              <TouchableOpacity 
+                style={styles.quantityButton}
+                onPress={() => updateQuantity(item.id, item.quantity - 1)}
+              >
+                <Ionicons name="remove" size={16} color={VIBRANT_COLOR} />
+              </TouchableOpacity>
+              <Text style={styles.quantityText}>{item.quantity}</Text>
+              <TouchableOpacity 
+                style={styles.quantityButton}
+                onPress={() => updateQuantity(item.id, item.quantity + 1)}
+              >
+                <Ionicons name="add" size={16} color={VIBRANT_COLOR} />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.subtotal}>${(item.price * item.quantity).toFixed(2)}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </Swipeable>
   );
 
   if (state.items.length === 0) {
@@ -101,6 +119,24 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  swipeableContainer: {
+    marginBottom: 16,
+    borderRadius: 20,
+    backgroundColor: '#FF7675',
+  },
+  deleteAction: {
+    backgroundColor: '#FF7675',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  deleteActionText: {
+    color: '#fff',
+    fontWeight: '700',
+    marginTop: 4,
   },
   emptyContainer: {
     flex: 1,
@@ -157,7 +193,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 20,
     padding: 12,
-    marginBottom: 16,
     shadowColor: VIBRANT_COLOR,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
