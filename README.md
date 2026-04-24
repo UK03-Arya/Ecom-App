@@ -1,50 +1,43 @@
-# Welcome to your Expo app 👋
+# E-Commerce Mini App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native e-commerce mini-app built with Expo.
 
-## Get started
+## Features
+- Login (mock authentication using DummyJSON API)
+- Home Page with Bottom Tab Navigation (Products & Cart)
+- Fetch and display products
+- Add/Remove products to cart with quantity controls
+- Logout functionality
 
-1. Install dependencies
+## Tech Stack
+- React Native (Expo)
+- React Navigation (Bottom Tabs, Stack)
+- State Management: Context API + `useReducer`
+- Axios for API requests
+- AsyncStorage for token persistence
 
+## Setup Instructions
+
+1. **Install dependencies:**
    ```bash
    npm install
    ```
 
-2. Start the app
-
+2. **Run the app:**
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## State Management Explanation
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+This app uses **Context API with `useReducer`** for state management, which provides a predictable state container similar to Redux but with less boilerplate.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. **`AuthContext`**: Manages the authentication state (`isAuthenticated`, `token`, `isLoading`, `error`). It handles login, logout, and token restoration using `AsyncStorage`.
+2. **`CartContext`**: Manages the shopping cart state (`items`). It handles adding items, removing items, updating quantities, and clearing the cart on logout.
 
-## Get a fresh project
+Using Context + `useReducer` is a great choice for this app as it avoids prop drilling and keeps state logic centralized and testable without the heavy overhead of external libraries.
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Assumptions & Trade-offs
+- Used standard `react-native` components instead of a UI library for simplicity and lower footprint.
+- Mocked authentication with DummyJSON means the token isn't a real JWT, but the flow mimics a real-world scenario.
+- Images are loaded from external URLs directly; in a production app, caching mechanisms (like `expo-image` or `react-native-fast-image`) would be used.
